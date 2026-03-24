@@ -1,7 +1,5 @@
-# OS-Project
-Expandability be damned, unleash the spaghetti
-
-### Who takes what?
+# النساجون الشرقيون
+### Expandability be damned, unleash the spaghetti
  - ( Adel ) Code Parser/Interpeter
  - ( ) System Calls
  - ( ) Mutexes
