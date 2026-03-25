@@ -25,10 +25,17 @@ void parse_line(char *line) {
 
     if (command == NULL || count == 0) return;
 
-    if (strcmp(command[0], "assign") == 0) {
-        //call assign
+    // akeed there is a better way but IDC, bruteforce it is
+    if (strcmp(command[0], "semWait") == 0) {
+        cmd_semWait(command, count);
+    } else if (strcmp(command[0], "semSignal") == 0) {
+        cmd_semSignal(command, count);
+    } else if (strcmp(command[0], "assign") == 0) {
+        cmd_assign(command, count);
     } else if (strcmp(command[0], "print") == 0) {
-        //call print
+        cmd_print(command, count);
+    } else if (strcmp(command[0], "writeFile") == 0) {
+        cmd_writeFile(command, count);
     }
 }
 
