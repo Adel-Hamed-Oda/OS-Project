@@ -3,9 +3,8 @@
 #include <string.h>
 
 #include "Parser.h"
-#include "Commands.h"
 
-void parse_line(char *line) {
+void parse_line(char *line, char ***memory, int *dynamic_memory_index) {
     int count = 0;
 
     char** command = separate_by_spaces(line, &count);
@@ -14,15 +13,15 @@ void parse_line(char *line) {
 
     // akeed there is a better way but IDC, bruteforce it is
     if (strcmp(command[0], "semWait") == 0) {
-        cmd_semWait(command, count);
+        
     } else if (strcmp(command[0], "semSignal") == 0) {
-        cmd_semSignal(command, count);
+        
     } else if (strcmp(command[0], "assign") == 0) {
-        cmd_assign(command, count);
+        
     } else if (strcmp(command[0], "print") == 0) {
-        cmd_print(command, count);
+        
     } else if (strcmp(command[0], "writeFile") == 0) {
-        cmd_writeFile(command, count);
+        
     }
 }
 

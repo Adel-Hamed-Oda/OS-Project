@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     //execute it line by line
     for (int i = 0; i < NUMBER_OF_MEMORY_WORDS; i++) {
         if (memory[i] != NULL) {
-            parse_line(memory[i]);
+            parse_line(memory[i], &memory, &dynamic_memory_index);
         }
     }
 }
