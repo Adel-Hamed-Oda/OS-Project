@@ -5,19 +5,6 @@
 #include "Parser.h"
 #include "Commands.h"
 
-const int MAX_LINE_LENGTH = 256;
-
-void parse_file(char *filename) {
-    FILE *file = fopen(filename, "r");
-
-    char line[MAX_LINE_LENGTH];
-    while (fgets(line, sizeof(line), file)) {
-        parse_line(line);
-    }
-
-    fclose(file);
-}
-
 void parse_line(char *line) {
     int count = 0;
 

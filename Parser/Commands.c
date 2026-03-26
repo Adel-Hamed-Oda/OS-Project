@@ -8,21 +8,21 @@
 #include "Commands.h"
 
 void cmd_semWait(char* args[], int count) {
-    
+    printf("gonna be swimmin, they're gonna be hatin\n");
 }
 
 void cmd_semSignal(char* args[], int count) {
-    
+    printf("end this miserable existence\n");
 }
 
 void cmd_assign(char* args[], int count) {
-    
+    printf("assigning value\n");
 }
 
 void cmd_print(char* args[], int count) {
-    
+    printf("printing value\n");
 }
 
 void cmd_writeFile(char* args[], int count) {
-    
+    printf("writing to file\n");
 }

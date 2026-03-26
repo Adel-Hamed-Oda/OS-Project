@@ -31,9 +31,11 @@ int main(int argc, char *argv[]) {
 
     load_file_into_memory(filename);
 
-    //testing to ensure it's working
+    //execute it line by line
     for (int i = 0; i < NUMBER_OF_MEMORY_WORDS; i++) {
-        printf("Memory[%d]: %s\n", i, memory[i]);
+        if (memory[i] != NULL) {
+            parse_line(memory[i]);
+        }
     }
 }
 
