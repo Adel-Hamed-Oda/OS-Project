@@ -3,8 +3,9 @@
 #include <string.h>
 
 #include "Parser.h"
+#include "Public Domain.h"
 
-void parse_line(char *line, char ***memory, int *dynamic_memory_index) {
+void parse_line(char *line) {
     int count = 0;
 
     char** command = separate_by_spaces(line, &count);
@@ -13,15 +14,15 @@ void parse_line(char *line, char ***memory, int *dynamic_memory_index) {
 
     // akeed there is a better way but IDC, bruteforce it is
     if (strcmp(command[0], "semWait") == 0) {
-        
+        semWait(command);
     } else if (strcmp(command[0], "semSignal") == 0) {
-        
+        semSignal(command);
     } else if (strcmp(command[0], "assign") == 0) {
-        
+        assign(command);
     } else if (strcmp(command[0], "print") == 0) {
-        
+        print(command);
     } else if (strcmp(command[0], "writeFile") == 0) {
-        
+        writeFile(command);
     }
 }
 
@@ -41,4 +42,24 @@ char** separate_by_spaces(char *input_string, int *count) {
 
     *count = i;
     return result;
+}
+
+void semWait(char** args) {
+
+}
+
+void semSignal(char** args) {
+
+}
+
+void assign(char** args) {
+
+}
+
+void print(char** args) {
+
+}
+
+void writeFile(char** args) {
+
 }
