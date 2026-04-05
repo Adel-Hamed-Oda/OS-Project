@@ -20,27 +20,31 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    memory = malloc(NUMBER_OF_MEMORY_WORDS * sizeof(char *));
+    initialize(argc, argv);
+}
 
-    char *filename = argv[1];
+void initialize(int argc, char *argv[]) {
+    // every file will count as a process, and every file should be proceeded with the time it should
+    // be loaded into the scheduler
+    file_count = (argc - 1)/2;
+    file_names = malloc(file_count * sizeof(char *));
+    for (int i = 0; i < file_count; i++) {
+        file_names[i] = argv[(2*i) + 1];
+    }
+    load_times = malloc(file_count * sizeof(int));
+    for (int i = 0; i < file_count; i++) {
+        load_times[i] = atoi(argv[(2*i) + 2]);
+    }
 
     // initialize "memory"
     memory = malloc(NUMBER_OF_MEMORY_WORDS * sizeof(char *));
     for (int i = 0; i < NUMBER_OF_MEMORY_WORDS; i++) {
         memory[i] = NULL;
     }
-
-    load_file_into_memory(filename);
-
-    //execute it line by line
-    for (int i = 0; i < NUMBER_OF_MEMORY_WORDS; i++) {
-        if (memory[i] != NULL) {
-            parse_line(memory[i]);
-        }
-    }
 }
 
-void load_file_into_memory(char *filename) {
+// DEPRECATED: this is just for testing
+void _load_file_into_memory(char *filename) {
     FILE *file = fopen(filename, "r");
     if (!file) {
         printf("Error: Could not open file %s\n", filename);
