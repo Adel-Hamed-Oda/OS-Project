@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "Parser.h"
-#include "Public Domain.h"
+#include "includes.h"
 
 void parse_line(char *line) {
     int count = 0;
