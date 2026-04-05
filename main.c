@@ -5,14 +5,12 @@
 #include "Parser.h"
 #include "Scheduler.h"
 #include "Process Controller.h"
+#include "Public Domain.h"
 
 void load_file_into_memory(char *filename);
 
 const int MAX_LINE_LENGTH = 256;
 const int NUMBER_OF_MEMORY_WORDS = 40;
-const int NUMBER_OF_SS_WORDS = 9999; // virtually infinite
-
-char **memory;
 
 //This is all just for testing and later on we will implement the schedulers in a much better way
 //NOTE: I used to have a "last available memory index" but decided to remove this and just set any free memory to NULL
@@ -21,6 +19,8 @@ int main(int argc, char *argv[]) {
         printf("Usage: %s <filename>\n", argv[0]);
         return 1;
     }
+
+    memory = malloc(NUMBER_OF_MEMORY_WORDS * sizeof(char *));
 
     char *filename = argv[1];
 
