@@ -11,8 +11,6 @@ Queue *ready_queue;
 Queue *blocked_queue;
 
 void advance_time() {
-    
-
     parse_line(NULL);
     
     time++;

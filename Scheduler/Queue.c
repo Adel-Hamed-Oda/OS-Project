@@ -13,10 +13,10 @@ Queue *create_queue() {
 }
 
 // Add to back
-void enqueue(Queue *q, PCB *process) {
+void enqueue(Queue *q, int process_id) {
     QueueNode *node = malloc(sizeof(QueueNode));
     if (node == NULL) return;
-    node->process = process;
+    node->process_id = process_id;
     node->next = NULL;
 
     if (q->rear == NULL) {       // queue is empty
@@ -30,11 +30,11 @@ void enqueue(Queue *q, PCB *process) {
 }
 
 // Remove from front
-PCB *dequeue(Queue *q) {
+int dequeue(Queue *q) {
     if (q->front == NULL) return NULL;
 
     QueueNode *temp = q->front;
-    PCB *process = temp->process;
+    int process = temp->process_id;
     q->front = q->front->next;
 
     if (q->front == NULL)        // queue is now empty
@@ -46,9 +46,9 @@ PCB *dequeue(Queue *q) {
 }
 
 // Peek without removing
-PCB *peek(Queue *q) {
+int peek(Queue *q) {
     if (q->front == NULL) return NULL;
-    return q->front->process;
+    return q->front->process_id;
 }
 
 int is_empty(Queue *q) {

@@ -11,4 +11,6 @@ typedef struct PCB {
 
 PCB *create_new_PCB(char *file_name);
 
+extern PCB *pcbs;
+
 #endif

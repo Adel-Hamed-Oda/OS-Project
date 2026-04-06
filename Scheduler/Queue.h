@@ -1,10 +1,8 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#include "Process Controller.h"
-
 typedef struct QueueNode {
-    PCB *process;
+    int process_id; // I should be using a void*, but I don't want the hassle of casting
     struct QueueNode *next;
 } QueueNode;
 
@@ -15,9 +13,9 @@ typedef struct {
 } Queue;
 
 Queue *create_queue();
-void enqueue(Queue *q, PCB *process);
-PCB *dequeue(Queue *q);
-PCB *peek(Queue *q);
+void enqueue(Queue *q, int process_id);
+int dequeue(Queue *q);
+int peek(Queue *q);
 int is_empty(Queue *q);
 
 #endif

@@ -1,5 +1,5 @@
-int file_count = 0;
-char **file_names;
-int *load_times;
+static int file_count = 0;
+static char **file_names;
+static int *load_times;
 
-char **memory;
+static char **memory;
