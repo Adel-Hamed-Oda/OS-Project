@@ -3,24 +3,35 @@
 
 #include "includes.h"
 
-static int next_pid = 0; // this will be used to assign unique PIDs to each process
-static PCB *pcbs; // this is a simple process table to keep track of all processes, indexed by PID
+const int MAX_LINE_LENGTH = 256;
+int total_processes = 0;
+static char **instructions; // this is a simple process table to keep track of all processes, indexed by PID
 
-void initialize_process_table(int max_processes) {
-    pcbs = malloc(sizeof(PCB) * max_processes);
+void initialize_process_controller(int max_processes) {
+    instructions = malloc(sizeof(char *) *max_processes);
+
+    for (int i = 0; i < max_processes; i++) {
+        create_new_process(FILE_NAMES[i]);
+    }
 }
 
-void create_new_PCB(char *file_name) {
-    PCB *new_pcb = malloc(sizeof(PCB));
-    new_pcb->pid = next_pid++;
-    new_pcb->file_name = file_name;
-    new_pcb->state = "ready";
-    new_pcb->program_counter = 0;
-    new_pcb->memory_boundaries = NULL;
+void create_new_process(char *file_name) {
+    FILE *file = fopen(file_name, "r");
+    if (file == NULL) {
+        fprintf(stderr, "Error opening file: %s\n", file_name);
+        return;
+    }
+
+    while (fgets(instructions[total_processes], MAX_LINE_LENGTH, file) != NULL) {
+        size_t len = strlen(instructions[total_processes]);
+        if (len > 0 && instructions[total_processes][len - 1] == '\n') {
+            instructions[total_processes][len - 1] = '\0';
+        }
+    }
     
-    pcbs[new_pcb->pid] = *new_pcb;
+    total_processes++;
 }
 
-PCB *get_PCB_by_pid(int pid) {
-    return &pcbs[pid];
+char *get_instructions_by_id(int id) {
+    return instructions[id];
 }

@@ -1,16 +1,9 @@
 #ifndef PROCESS_CONTROLLER_H
 #define PROCESS_CONTROLLER_H
 
-typedef struct PCB {
-    int pid;
-    char *file_name;
-    char *state;  // "blocked", "ready", "running", "terminated"
-    int program_counter;
-    int *memory_boundaries; // [1, 4] means I am occupying memory words 1, 2, and 3
-} PCB;
+void initialize_process_controller(int max_processes);
+char *get_instructions_by_id(int pid);
 
-PCB *create_new_PCB(char *file_name);
-
-extern PCB *pcbs;
+extern char **instructions;
 
 #endif
