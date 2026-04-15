@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "includes.h"
+#include "Includes.h"
 
 const int MAX_LINE_LENGTH = 256;
 int total_processes = 0;

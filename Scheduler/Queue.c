@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "includes.h"
+#include "Includes.h"
 
 Queue *create_queue() {
     Queue *q = malloc(sizeof(Queue));

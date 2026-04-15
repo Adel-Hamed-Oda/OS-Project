@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "includes.h"
+#include "Includes.h"
 
 void load_file_into_memory(char *filename);
 

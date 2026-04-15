@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "includes.h"
+#include "Includes.h"
 
 const int INITIAL_MUTEXES = 3;
 

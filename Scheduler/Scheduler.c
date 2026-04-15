@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "includes.h"
+#include "Includes.h"
 
 const int MAX_TIME = 100;
 const char *SCHEDULING_ALGORITHM = "FCFS"; // "FCFS", "RR", "HRRN", or "MLFQ"
