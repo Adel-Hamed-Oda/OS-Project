@@ -21,6 +21,8 @@ const char* STATE_TERMINATED = "4";
 
 void advance_time() {    
     time++;
+
+    scanf("%*c"); // Wait for user input to advance time (for step-by-step execution)
 }
 
 void initialize_scheduler() {
