@@ -1,9 +1,9 @@
 #ifndef PROCESS_CONTROLLER_H
 #define PROCESS_CONTROLLER_H
 
-void initialize_process_controller(int max_processes);
-char *get_instructions_by_id(int pid);
+void initialize_process_controller();
 
 extern char **instructions;
+extern int instruction_counts[FILE_COUNT];
 
 #endif

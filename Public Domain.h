@@ -8,7 +8,7 @@ typedef struct MemoryWord {
 } MemoryWord;
 
 // this tells the compiler that there is a variable called "memory" that is defined in Public Domain.c
-extern char **memory;
+extern MemoryWord *memory;
 
 // this tells the compiler that there is a variable called "filecount" that is defined in Public Domain.c
 extern const int FILE_COUNT = 3;

@@ -6,11 +6,12 @@
 const int MAX_LINE_LENGTH = 256;
 int total_processes = 0;
 static char **instructions; // this is a simple process table to keep track of all processes, indexed by PID
+static int instruction_counts[FILE_COUNT]; // this keeps track of how many instructions each process has
 
-void initialize_process_controller(int max_processes) {
-    instructions = malloc(sizeof(char *) *max_processes);
+void initialize_process_controller() {
+    instructions = malloc(sizeof(char *) * FILE_COUNT);
 
-    for (int i = 0; i < max_processes; i++) {
+    for (int i = 0; i < FILE_COUNT; i++) {
         create_new_process(FILE_NAMES[i]);
     }
 }
@@ -27,11 +28,9 @@ void create_new_process(char *file_name) {
         if (len > 0 && instructions[total_processes][len - 1] == '\n') {
             instructions[total_processes][len - 1] = '\0';
         }
+        instruction_counts[total_processes]++;
     }
-    
-    total_processes++;
-}
 
-char *get_instructions_by_id(int id) {
-    return instructions[id];
+    fclose(file);
+    total_processes++;
 }

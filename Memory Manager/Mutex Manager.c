@@ -15,44 +15,39 @@ void init_mutexes() {
     mutexes[2].name = "file";
 
     for (int i = 0; i < INITIAL_MUTEXES; i++) {
-        mutexes[i].value = 0;
         mutexes[i].owner_pid = -1; // -1 indicates the mutex is unlocked
-        mutexes[i].waiting_queue = create_queue(); // Initialize the waiting queue for each mutex
     }
 }
 
-void sem_wait_mutex(int pid, char *mutex_name) {
+int sem_wait_mutex(int pid, char *mutex_name) {
     if (mutex_name == NULL) return;
 
     for (int i = 0; i < INITIAL_MUTEXES; i++) {
         if (strcmp(mutexes[i].name, mutex_name) == 0) {
             if (mutexes[i].owner_pid == -1) { // Mutex is unlocked
                 mutexes[i].owner_pid = pid; // Lock the mutex for the current process
-            } else { // Mutex is already locked
-                enqueue(mutexes[i].waiting_queue, pid); // Add the process to the waiting queue
+                return 0; // process has been locked successfully
             }
-
-            return;
         }
     }
+
+    return -1; // process has been blocked
 }
 
-void sem_signal_mutex(int pid, char *mutex_name) {
+int sem_signal_mutex(int pid, char *mutex_name) {
     if (mutex_name == NULL) return;
 
     for (int i = 0; i < INITIAL_MUTEXES; i++) {
         if (strcmp(mutexes[i].name, mutex_name) == 0) {
             if (mutexes[i].owner_pid == pid) { // Only the owner can release the mutex
-                if (!is_empty(mutexes[i].waiting_queue)) { // If there are waiting processes
-                    int next_process_id = dequeue(mutexes[i].waiting_queue); // Get the next process in line
-                    mutexes[i].owner_pid = next_process_id; // Transfer ownership to the next process
-                    
-                    // TODO: should also make the process ready instead of waiting
-                } else {
-                    mutexes[i].owner_pid = -1; // Unlock the mutex if no processes are waiting
+                if (mutexes[i].owner_pid != -1) {
+                    mutexes[i].owner_pid = -1; // Unlock the mutex
                 }
-                return;
+
+                return 0; // process has been unlocked successfully
             }
         }
     }
+
+    return -1; // process has not been unlocked
 }

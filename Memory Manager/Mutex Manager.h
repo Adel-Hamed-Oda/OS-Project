@@ -3,9 +3,7 @@
 
 typedef struct Mutex {
     char *name;
-    int value;
-    int owner_pid; // PID of the process that currently owns the mutex, -1 if 
-    Queue *waiting_queue; // Queue of processes waiting for this mutex
+    int owner_pid; // PID of the process that currently owns the mutex, -1 if
 } Mutex;
 
 // Function declarations for mutex management
