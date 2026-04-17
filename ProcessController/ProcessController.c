@@ -33,6 +33,10 @@ void create_new_process(char *file_name) {
     char temp_line[MAX_LINE_LENGTH];
 
     while (fgets(temp_line, MAX_LINE_LENGTH, file) != NULL) {
+        if (strcmp(temp_line, "\n") == 0) {
+            continue;
+        }
+        
         size_t len = strlen(temp_line);
         if (len > 0 && temp_line[len - 1] == '\n') {
             temp_line[len - 1] = '\0';
