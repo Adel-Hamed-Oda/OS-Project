@@ -4,6 +4,13 @@
 
 #include "Includes.h"
 
+char** separate_by_spaces(char *input_string, int *count);
+void semWait(char** args);
+void semSignal(char** args);
+void assign(char** args);
+void print(char** args);
+void writeFile(char** args);
+
 void parse_line(char *line) {
     int count = 0;
 

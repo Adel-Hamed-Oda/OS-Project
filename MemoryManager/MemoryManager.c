@@ -102,7 +102,7 @@ int allocate_process(int pid, int start) {
     // 6. Store Instructions
     for (int i = 0; i < instruction_counts[pid]; i++) {
         memory[start + 4 + 3 + i].name = NULL;
-        memory[start + 4 + 3 + i].value = instructions[pid][i];
+        memory[start + 4 + 3 + i].value = strdup(instructions[pid][i]);
         memory[start + 4 + 3 + i].type = 3; // mark this memory word as an instruction
     }
 

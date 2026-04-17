@@ -15,4 +15,6 @@ void save_context(int pid);
 
 void load_context(int pid, int start);
 
+void compact_memory();
+
 #endif

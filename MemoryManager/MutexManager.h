@@ -8,7 +8,7 @@ typedef struct Mutex {
 
 // Function declarations for mutex management
 void init_mutexes();
-void sem_wait_mutex(int pid, char *mutex_name);
-void release_mutex(int pid, char *mutex_name);
+int sem_wait_mutex(int pid, char *mutex_name);
+int sem_signal_mutex(int pid, char *mutex_name);
 
 #endif // MUTEX_MANAGER_H

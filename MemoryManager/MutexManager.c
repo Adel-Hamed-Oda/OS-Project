@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "Includes.h"
 
@@ -20,7 +21,7 @@ void init_mutexes() {
 }
 
 int sem_wait_mutex(int pid, char *mutex_name) {
-    if (mutex_name == NULL) return;
+    if (mutex_name == NULL) return -1;
 
     for (int i = 0; i < INITIAL_MUTEXES; i++) {
         if (strcmp(mutexes[i].name, mutex_name) == 0) {
@@ -35,7 +36,7 @@ int sem_wait_mutex(int pid, char *mutex_name) {
 }
 
 int sem_signal_mutex(int pid, char *mutex_name) {
-    if (mutex_name == NULL) return;
+    if (mutex_name == NULL) return -1;
 
     for (int i = 0; i < INITIAL_MUTEXES; i++) {
         if (strcmp(mutexes[i].name, mutex_name) == 0) {

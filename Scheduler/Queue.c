@@ -31,7 +31,7 @@ void enqueue(Queue *q, int process_id) {
 
 // Remove from front
 int dequeue(Queue *q) {
-    if (q->front == NULL) return NULL;
+    if (q->front == NULL) return (int)NULL;
 
     QueueNode *temp = q->front;
     int process = temp->process_id;
@@ -47,7 +47,7 @@ int dequeue(Queue *q) {
 
 // Peek without removing
 int peek(Queue *q) {
-    if (q->front == NULL) return NULL;
+    if (q->front == NULL) return (int)NULL;
     return q->front->process_id;
 }
 
