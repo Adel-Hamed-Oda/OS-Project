@@ -3,16 +3,18 @@
 
 #include "Includes.h"
 
+// Define the global variables exactly once here!
+MemoryWord *memory;
+const char *FILE_NAMES[] = {"TestingFiles/Program_1.txt", "TestingFiles/Program_2.txt", "TestingFiles/Program_3.txt"};
+const int LOAD_TIMES[] = {0, 1, 4};
+
 void initialize();
 
-const int MAX_LINE_LENGTH = 256;
-
-//This is all just for testing and later on we will implement the schedulers in a much better way
-//NOTE: I used to have a "last available memory index" but decided to remove this and just set any free memory to NULL
 int main(void) {
     initialize();
 
     run_round_robin_scheduler();
+    return 0;
 }
 
 void initialize() {

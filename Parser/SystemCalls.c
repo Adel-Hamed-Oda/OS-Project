@@ -3,8 +3,6 @@
 
 #include "Includes.h"
 
-int MAX_LINE_LENGTH = 256;
-
 char *system_readFile(char *filename) {
     return NULL;
 }

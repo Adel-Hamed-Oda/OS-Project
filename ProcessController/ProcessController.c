@@ -4,18 +4,18 @@
 
 #include "Includes.h"
 
-const int MAX_LINE_LENGTH = 256;
-int total_processes = 0;
-char ***instructions; // this is a simple process table to keep track of all processes, indexed by PID
-int instruction_counts[FILE_COUNT]; // this keeps track of how many instructions each process has
+// Do not use "static" here, otherwise other files can't use these variables!
+char ***instructions;
+int instruction_counts[FILE_COUNT];
 
-void create_new_process(char *file_name);
+int total_processes = 0;
 
 void initialize_process_controller() {
-    instructions = malloc(sizeof(char *) * FILE_COUNT);
+    // Allocate space for the number of processes
+    instructions = malloc(sizeof(char **) * FILE_COUNT);
 
     for (int i = 0; i < FILE_COUNT; i++) {
-        create_new_process(strdup(FILE_NAMES[i]));
+        create_new_process((char *)FILE_NAMES[i]);
     }
 }
 
@@ -26,12 +26,20 @@ void create_new_process(char *file_name) {
         return;
     }
 
-    int count = 0;
-    while (fgets(instructions[total_processes][count], MAX_LINE_LENGTH, file) != NULL) {
-        size_t len = strlen(instructions[total_processes][count]);
-        if (len > 0 && instructions[total_processes][count][len - 1] == '\n') {
-            instructions[total_processes][count][len - 1] = '\0';
+    // Allocate space for up to 50 instructions per process
+    instructions[total_processes] = malloc(sizeof(char *) * 50);
+    instruction_counts[total_processes] = 0;
+
+    char temp_line[MAX_LINE_LENGTH];
+
+    while (fgets(temp_line, MAX_LINE_LENGTH, file) != NULL) {
+        size_t len = strlen(temp_line);
+        if (len > 0 && temp_line[len - 1] == '\n') {
+            temp_line[len - 1] = '\0';
         }
+        
+        // Copy the string safely into the instructions array
+        instructions[total_processes][instruction_counts[total_processes]] = strdup(temp_line);
         instruction_counts[total_processes]++;
     }
 
