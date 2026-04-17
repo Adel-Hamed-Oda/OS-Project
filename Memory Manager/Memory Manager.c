@@ -109,6 +109,15 @@ int allocate_process(int pid, int start) {
     return start; // Successfully allocated, returning start index
 }
 
+void change_process_state(int pid, const char* state) {
+    int start, end;
+    get_process_bounds(pid, &start, &end);
+    if (start != -1) {
+        if (memory[start + 1].value != NULL) free(memory[start + 1].value);
+        memory[start + 1].value = strdup(state); // Update state as string
+    }
+}
+
 void compact_memory() {
     int free_index = 0;
 
