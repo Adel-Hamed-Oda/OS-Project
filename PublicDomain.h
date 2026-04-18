@@ -14,5 +14,6 @@ typedef struct MemoryWord {
 extern MemoryWord *memory;
 extern const char *FILE_NAMES[];
 extern const int LOAD_TIMES[];
+extern int TESTING_MODE;
 
 #endif

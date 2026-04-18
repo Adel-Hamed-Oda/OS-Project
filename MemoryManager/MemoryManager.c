@@ -371,10 +371,80 @@ int try_swapping_out_processes(int required_size) {
             fprintf(stderr, "Error: No processes left to swap out, but still need %d words.\n", required_size);
             return -1;
         }
-
-        printf("Swapping out process %d (size: %d words) to free memory...\n", largest_pid, max_size);
+        
         save_context(largest_pid); 
     }
 
     return 0; 
+}
+
+void print_process() {
+    int start, end;
+    get_process_bounds(current_process_id, &start, &end);
+
+    if (start == -1 || end == -1) {
+        printf("Process %d is not currently in memory.\n", current_process_id);
+        return;
+    }
+
+    printf("=== Process State: ===========================\n");
+
+    int pc = atoi((char *)memory[start + 3].value);
+
+    for (int i = start; i <= end; i++) {
+        if (memory[i].type != 0) {
+            char* prefix = (i == start + pc + 7) ? "--> " : "    ";
+            
+            printf("%sMemory Index %d: %s, %s, %d\n", 
+                   prefix,
+                   i, 
+                   memory[i].name ? memory[i].name : "(null)", 
+                   memory[i].value ? memory[i].value : "(null)", 
+                   memory[i].type);
+        }
+    }
+
+    printf("=============================================\n");
+}
+
+void memory_set_variable(char *var_name, char *value) {
+    int start, end;
+    get_process_bounds(current_process_id, &start, &end);
+
+    if (start == -1 || end == -1) {
+        fprintf(stderr, "Error: Process bounds not found\n");
+        return;
+    }
+
+    for (int i = start + 4; i < start + 7; i++) {
+        if (memory[i].type == 2 && memory[i].name != NULL && strcmp(memory[i].name, var_name) == 0) {
+            memory[i].value = value; // Update the value of the existing variable
+            return;
+        }
+    }
+
+    for (int i = start + 4; i < start + 7; i++) {
+        if (memory[i].type == 0) {
+            memory[i].name = var_name;
+            memory[i].value = value;
+            memory[i].type = 2; // Mark this memory word as a variable
+            return;
+        }
+    }
+}
+
+char *memory_get_variable(char *var_name) {
+    int start, end;
+    get_process_bounds(current_process_id, &start, &end);
+
+    if (start == -1 || end == -1) {
+        return NULL; // Process bounds not found
+    }
+
+    for (int i = start + 4; i < start + 7; i++) {
+        if (memory[i].type == 2 && memory[i].name != NULL && strcmp(memory[i].name, var_name) == 0) {
+            return memory[i].value; // Return the value of the variable
+        }
+    }
+    return NULL; // Variable not found
 }

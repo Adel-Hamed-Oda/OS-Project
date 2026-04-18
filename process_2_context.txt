@@ -1,0 +1,16 @@
+id:2:1
+state:1:1
+bounds:14-29:1
+pc:4:1
+(null):(null):2
+(null):(null):2
+(null):(null):2
+(null):semWait:3
+(null):assign:3
+(null):semSignal:3
+(null):semWait:3
+(null):assign b readFile a:3
+(null):semSignal file:3
+(null):semWait userOutput:3
+(null):print b:3
+(null):semSignal userOutput:3

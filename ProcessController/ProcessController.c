@@ -41,8 +41,6 @@ void create_new_process(char *file_name) {
         if (len > 0 && temp_line[len - 1] == '\n') {
             temp_line[len - 1] = '\0';
         }
-
-        printf("Loaded instruction for Process %d: %s\n", total_processes, temp_line);
         
         // Copy the string safely into the instructions array
         instructions[total_processes][instruction_counts[total_processes]] = strdup(temp_line);

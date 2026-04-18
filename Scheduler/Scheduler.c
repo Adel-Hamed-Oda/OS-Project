@@ -57,20 +57,18 @@ void run_round_robin_scheduler() {
     int completed_processes = 0;
     int current_quantum_used = 0;
 
-    printf("--- Starting Round Robin Scheduler (Quantum: %d) ---\n", TIME_QUANTUM);
-
     while (completed_processes < FILE_COUNT) {
         
         // 1. Check for New Process Arrivals at current time unit
         for (int i = 0; i < FILE_COUNT; i++) {
             if (LOAD_TIMES[i] == time) {
-                printf("[Time %d] Process %d arrived.\n", time, i);
+                if (TESTING_MODE) printf("[Time %d] Process %d arrived.\n", time, i);
                 
                 // Load into memory (try_looking_for_context = 0 since it's brand new)
                 if (try_load_process_into_memory(i, 0) != -1) {
                     change_process_state(i, STATE_READY);
                 } else {
-                    printf("[Time %d] Failed to load Process %d (Memory Full).\n", time, i);
+                    if (TESTING_MODE) printf("[Time %d] Failed to load Process %d (Memory Full).\n", time, i);
                 }
                 
                 enqueue(ready_queue, i);
@@ -79,7 +77,6 @@ void run_round_robin_scheduler() {
 
         // 2. Check if current process exhausted its time quantum
         if (current_process_id != -1 && current_quantum_used == TIME_QUANTUM) {
-            printf("[Time %d] Process %d exhausted quantum. Context switching...\n", time, current_process_id);
             change_process_state(current_process_id, STATE_READY);
             enqueue(ready_queue, current_process_id);
             
@@ -97,12 +94,10 @@ void run_round_robin_scheduler() {
             get_process_bounds(current_process_id, &start, &end);
             
             if (start == -1) {
-                printf("[Time %d] Process %d is not in memory. Swapping IN...\n", time, current_process_id);
                 try_load_process_into_memory(current_process_id, 1);
             }
             
             change_process_state(current_process_id, STATE_RUNNING);
-            printf("[Time %d] Scheduled Process %d.\n", time, current_process_id);
         }
 
         // 4. Execute an instruction for the current running process
@@ -122,6 +117,8 @@ void run_round_robin_scheduler() {
                 // Parse and execute the instruction
                 parse_line(instruction);
 
+                print_process(); // Print process state after executing instruction
+
                 // Increment PC and Quantum tracking
                 pc++;
                 current_quantum_used++;
@@ -134,7 +131,7 @@ void run_round_robin_scheduler() {
 
                 // Check if the process has finished all its instructions
                 if (pc >= instruction_counts[current_process_id]) {
-                    printf("[Time %d] Process %d Finished Execution.\n", time, current_process_id);
+                    if (TESTING_MODE) printf("[Time %d] Process %d Finished Execution.\n", time, current_process_id);
                     change_process_state(current_process_id, STATE_TERMINATED);
                     
                     // Clear it from memory to free up space
@@ -156,12 +153,12 @@ void run_round_robin_scheduler() {
             }
         } else {
             // CPU is idling
-            printf("[Time %d] CPU Idle.\n", time);
+            if (TESTING_MODE) printf("[Time %d] CPU Idle.\n", time);
         }
 
         // 5. Advance time unit
         advance_time();
     }
 
-    printf("--- Scheduling Complete at Time %d ---\n", time);
+    if (TESTING_MODE) printf("--- Scheduling Complete at Time %d ---\n", time);
 }

@@ -15,6 +15,12 @@ void save_context(int pid);
 
 void load_context(int pid, int start);
 
+char* memory_get_variable(char *var_name);
+
+void memory_set_variable(char *var_name, char *value);
+
 void compact_memory();
+
+void print_process();
 
 #endif

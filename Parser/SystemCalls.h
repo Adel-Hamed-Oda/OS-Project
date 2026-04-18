@@ -8,5 +8,6 @@ void system_printFromTo(int start, int end);
 void system_assign(char *var_name, char *value);
 char *system_getInput();
 char *system_getVar(char *var_name);
+void system_setVar(char *var_name, char *value);
 
 #endif

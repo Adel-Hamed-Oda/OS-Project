@@ -10,6 +10,7 @@ void semSignal(char** args);
 void assign(char** args);
 void print(char** args);
 void writeFile(char** args);
+void printFromTo(char** args);
 
 void parse_line(char *line) {
     int count = 0;
@@ -29,6 +30,8 @@ void parse_line(char *line) {
         print(command);
     } else if (strcmp(command[0], "writeFile") == 0) {
         writeFile(command);
+    } else if (strcmp(command[0], "printFromTo") == 0) {
+        printFromTo(command);
     }
 }
 
@@ -51,21 +54,85 @@ char** separate_by_spaces(char *input_string, int *count) {
 }
 
 void semWait(char** args) {
+    int result = sem_wait_mutex(current_process_id, args[1]);
 
+    if (result == 0) {
+        block_process(current_process_id, args[1]);
+    }
 }
 
 void semSignal(char** args) {
-
+    sem_signal_mutex(current_process_id, args[1]);
 }
 
+// args[1] should always be a variable
+// args[2] can be another variable or input or readfile (I will ignore literals for now)
 void assign(char** args) {
+    char *var_name = args[1];
+    char *value = args[2];
 
+    if (strcmp(value, "input") == 0) {
+        char *result = system_getInput();
+
+        system_setVar(var_name, result);
+        free(result);
+    } else if (strcmp(value, "readFile") == 0) {
+        char *file_name = args[3];
+        
+        char *result = system_readFile(file_name);
+        system_setVar(var_name, result);
+        free(file_name);
+        free(result);
+    } else {
+        system_setVar(var_name, system_getVar(value));
+    }
 }
 
+// args[1] can either be a variable or readfile (I will skip both literals and input for now)
 void print(char** args) {
+    char *value = args[1];
 
+    if (strcmp(value, "readFile") == 0) {
+        char *file_name = args[2];
+        
+        char *result = system_readFile(file_name);
+        system_print(result);
+        free(file_name);
+        free(result);
+    } else {
+        system_print(system_getVar(value));
+    }
 }
 
+// args[1] should be the filename
+// args[2] can either be a variable, readFile or input, again literals will be skipped
 void writeFile(char** args) {
+    char *file_name = args[1];
+    char *content_arg = args[2];
+    char *content = NULL;
 
+    if (strcmp(content_arg, "input") == 0) {
+        content = system_getInput();
+    } else if (strcmp(content_arg, "readFile") == 0) {
+        char *file_name_2 = args[3];
+        content = system_readFile(file_name_2);
+        free(file_name_2);
+    } else {
+        content = system_getVar(content_arg);
+    }
+
+    system_writeFile(file_name, content);
+
+    free(file_name);
+}
+
+// for now I assume they are always variables
+void printFromTo(char** args) {
+    char *var1 = args[1];
+    char *var2 = args[2];
+
+    int start = atoi(system_getVar(var1));
+    int end = atoi(system_getVar(var2));
+
+    system_printFromTo(start, end);
 }
