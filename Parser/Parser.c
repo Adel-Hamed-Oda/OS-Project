@@ -39,7 +39,7 @@ char** separate_by_spaces(char *input_string, int *count) {
     char **result = NULL;
     int i = 0;
 
-    char *token = strtok(input_string, " "); //wtf is this? IDK, but it works
+    char *token = strtok(strdup(input_string), " "); //wtf is this? IDK, but it works
     while (token != NULL) {
         result = realloc(result, (i + 1) * sizeof(char *));
 

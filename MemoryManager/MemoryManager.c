@@ -25,9 +25,9 @@ void initialize_memory() {
 }
 
 int try_load_process_into_memory(int pid, int try_looking_for_context) {
-    int start, end;
-    get_process_bounds(pid, &start, &end);
-    if (start != -1) {
+    int test_start, test_end;
+    get_process_bounds(pid, &test_start, &test_end);
+    if (test_start != -1) {
         return -1;
     }
     
@@ -398,7 +398,7 @@ void print_process() {
 
     for (int i = start; i <= end; i++) {
         if (memory[i].type != 0) {
-            char* prefix = (i == start + pc + 7 + 1) ? "--> " : "    "; // 1 is for next instruction
+            char* prefix = (i == start + pc + 7) ? "--> " : "    ";
             
             printf("%sMemory Index %d: %s, %s, %d\n", 
                    prefix,
