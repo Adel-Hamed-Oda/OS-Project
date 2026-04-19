@@ -22,7 +22,7 @@ const char* STATE_TERMINATED = "4";
 void advance_time() {    
     time++;
 
-    scanf("%*c"); // Wait for user input to advance time (for step-by-step execution)
+    // scanf("%*c"); // Wait for user input to advance time (for step-by-step execution)
 }
 
 void initialize_scheduler() {
@@ -114,10 +114,10 @@ void run_round_robin_scheduler() {
 
                 printf("[Time %d] Process %d executing [PC: %d]: %s\n", time, current_process_id, pc, instruction);
                 
+                print_process(); // Print process state before executing, showing the next instruciton to run
+
                 // Parse and execute the instruction
                 parse_line(instruction);
-
-                print_process(); // Print process state after executing instruction
 
                 // Increment PC and Quantum tracking
                 pc++;
@@ -126,8 +126,7 @@ void run_round_robin_scheduler() {
                 // Update the PC in memory
                 char pc_str[16];
                 snprintf(pc_str, 16, "%d", pc);
-                if (memory[start + 3].value != NULL) free(memory[start + 3].value);
-                memory[start + 3].value = strdup(pc_str);
+                if (memory[start + 3].value != NULL) memory[start + 3].value = strdup(pc_str);
 
                 // Check if the process has finished all its instructions
                 if (pc >= instruction_counts[current_process_id]) {
