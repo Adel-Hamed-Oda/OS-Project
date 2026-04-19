@@ -1,15 +1,30 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build_with_make",
-            "type": "shell",
-            "command": "mingw32-make",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": ["$gcc"]
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build with Make",
+      "type": "shell",
+      "command": "make",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Run Project",
+      "type": "shell",
+      "command": "./OS_Project.exe",
+      "dependsOn": "Build with Make",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Clean",
+      "type": "shell",
+      "command": "make clean"
+    }
+  ]
 }

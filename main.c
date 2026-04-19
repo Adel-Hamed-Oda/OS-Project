@@ -23,6 +23,7 @@ int main(int argc, char *argv[]) {
 }
 
 void initialize() {
+    initialize_mutexes();
     initialize_memory();
     initialize_process_controller();
     initialize_scheduler();

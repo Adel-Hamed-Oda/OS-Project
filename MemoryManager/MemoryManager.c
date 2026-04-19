@@ -25,6 +25,12 @@ void initialize_memory() {
 }
 
 int try_load_process_into_memory(int pid, int try_looking_for_context) {
+    int start, end;
+    get_process_bounds(pid, &start, &end);
+    if (start != -1) {
+        return -1;
+    }
+    
     int required_size = 4 + 3 + instruction_counts[pid]; // 4 for PCB, 3 for variables, rest for instructions
     
     // Attempt to load from context first if requested
@@ -47,8 +53,8 @@ int try_load_process_into_memory(int pid, int try_looking_for_context) {
             fclose(file);
             return 0; // Fixed double semicolon
         }
-    } 
-    
+    }
+
     // If context was not requested OR the context file didn't exist, allocate new:
     int start = find_free_memory(required_size);
     if (start == -1) {
@@ -57,11 +63,11 @@ int try_load_process_into_memory(int pid, int try_looking_for_context) {
         }
         start = find_free_memory(required_size);
     }
-    
+
     allocate_process(pid, start);
     return 0;
 }
-    
+
 int allocate_process(int pid, int start) {
     // We need 4 words for PCB + 3 words for Variables + N words for instructions
     int total_required = 4 + 3 + instruction_counts[pid];
@@ -113,8 +119,7 @@ void change_process_state(int pid, const char* state) {
     int start, end;
     get_process_bounds(pid, &start, &end);
     if (start != -1) {
-        if (memory[start + 1].value != NULL) free(memory[start + 1].value);
-        memory[start + 1].value = strdup(state); // Update state as string
+        if (memory[start + 1].value != NULL) memory[start + 1].value = strdup(state);
     }
 }
 
@@ -393,7 +398,7 @@ void print_process() {
 
     for (int i = start; i <= end; i++) {
         if (memory[i].type != 0) {
-            char* prefix = (i == start + pc + 7) ? "--> " : "    ";
+            char* prefix = (i == start + pc + 7 + 1) ? "--> " : "    "; // 1 is for next instruction
             
             printf("%sMemory Index %d: %s, %s, %d\n", 
                    prefix,

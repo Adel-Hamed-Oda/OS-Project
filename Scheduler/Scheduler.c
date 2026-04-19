@@ -114,10 +114,10 @@ void run_round_robin_scheduler() {
 
                 printf("[Time %d] Process %d executing [PC: %d]: %s\n", time, current_process_id, pc, instruction);
                 
+                print_process(); // Print process state before executing, showing the next instruciton to run
+
                 // Parse and execute the instruction
                 parse_line(instruction);
-
-                print_process(); // Print process state after executing instruction
 
                 // Increment PC and Quantum tracking
                 pc++;

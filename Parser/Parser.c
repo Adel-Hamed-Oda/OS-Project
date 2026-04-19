@@ -54,9 +54,9 @@ char** separate_by_spaces(char *input_string, int *count) {
 }
 
 void semWait(char** args) {
-    int result = sem_wait_mutex(current_process_id, args[1]);
+    int success = sem_wait_mutex(current_process_id, args[1]);
 
-    if (result == 0) {
+    if (!success) {
         block_process(current_process_id, args[1]);
     }
 }
