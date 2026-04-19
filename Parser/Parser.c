@@ -32,6 +32,8 @@ void parse_line(char *line) {
         writeFile(command);
     } else if (strcmp(command[0], "printFromTo") == 0) {
         printFromTo(command);
+    } else {
+        fprintf(stderr, "Error: Unknown command '%s'\n", command[0]);
     }
 }
 
