@@ -80,18 +80,28 @@ void assign(char** args) {
 
     if (strcmp(value, "input") == 0) {
         char *result = system_getInput();
-
-        system_setVar(var_name, result);
-        free(result);
+        if (result != NULL) {
+            system_setVar(var_name, result);
+            free(result);
+        }
     } else if (strcmp(value, "readFile") == 0) {
-        char *file_name = args[3];
+        char *file_name = system_getVar(args[3]); 
         
-        char *result = system_readFile(file_name);
-        system_setVar(var_name, result);
-        free(file_name);
-        free(result);
+        if (file_name != NULL) {
+            char *result = system_readFile(file_name);
+            
+            if (result != NULL) {
+                system_setVar(var_name, result);
+                free(result);
+            }
+        } else {
+            fprintf(stderr, "Error: Variable '%s' not found for readFile.\n", args[3]);
+        }
     } else {
-        system_setVar(var_name, system_getVar(value));
+        char *var_value = system_getVar(value);
+        if (var_value != NULL) {
+            system_setVar(var_name, var_value);
+        }
     }
 }
 
@@ -104,17 +114,15 @@ void print(char** args) {
         
         char *result = system_readFile(file_name);
         system_print(result);
-        free(file_name);
-        free(result);
     } else {
         system_print(system_getVar(value));
     }
 }
 
-// args[1] should be the filename
+// args[1] should be the filename variable
 // args[2] can either be a variable, readFile or input, again literals will be skipped
 void writeFile(char** args) {
-    char *file_name = args[1];
+    char *file_name_var = args[1];
     char *content_arg = args[2];
     char *content = NULL;
 
@@ -128,6 +136,7 @@ void writeFile(char** args) {
         content = system_getVar(content_arg);
     }
 
+    char *file_name = system_getVar(file_name_var);
     system_writeFile(file_name, content);
 
     free(file_name);

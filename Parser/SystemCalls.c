@@ -67,18 +67,14 @@ void system_assign(char *var_name, char *value) {
 }
 
 char *system_getInput() {
-    if (TESTING_MODE) {
-        return "1";
-    } else {
-        char *input = malloc(sizeof(char) * MAX_LINE_LENGTH);
-        if (input == NULL) return NULL;
-        
-        if (fgets(input, MAX_LINE_LENGTH, stdin) != NULL) {
-            input[strcspn(input, "\n")] = '\0';
-        }
-        
-        return input;
+    char *input = malloc(sizeof(char) * MAX_LINE_LENGTH);
+    if (input == NULL) return NULL;
+    
+    if (fgets(input, MAX_LINE_LENGTH, stdin) != NULL) {
+        input[strcspn(input, "\n")] = '\0';
     }
+    
+    return input;
 }
 
 char *system_getVar(char *var_name) {

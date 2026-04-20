@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
 #include "Includes.h"
 
@@ -30,6 +31,7 @@ void advance_time() {
         // This will wait for the user to press Enter if the buffer is empty, 
         // OR clear out any leftover garbage from a previous input command.
         while ((c = getchar()) != '\n' && c != EOF);
+        Sleep(1000);
     }
 }
 
