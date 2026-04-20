@@ -179,7 +179,7 @@ int find_free_memory(int required_size) {
     return -1; // No sufficient free block found
 }
 
-char *get_variable(char *var_name) {
+char *memory_get_variable(char *var_name) {
     int start, end;
     get_process_bounds(current_process_id, &start, &end);
 
@@ -195,7 +195,7 @@ char *get_variable(char *var_name) {
     return NULL; // Variable not found
 }
 
-void set_variable(char *var_name, char *value) {
+void memory_set_variable(char *var_name, char *value) {
     int start, end;
     get_process_bounds(current_process_id, &start, &end);
 
@@ -204,22 +204,24 @@ void set_variable(char *var_name, char *value) {
         return;
     }
 
-    for (int i = start; i <= end; i++) {
+    // 1. Check if the variable already exists and update it
+    for (int i = start + 4; i < start + 7; i++) {
         if (memory[i].type == 2 && memory[i].name != NULL && strcmp(memory[i].name, var_name) == 0) {
-            memory[i].value = value; // Update the value of the existing variable
+            memory[i].value = strdup(value); // Update the value of the existing variable
             return;
         }
     }
 
-    // If variable does not exist, find a free memory word to store it
-    int free_index = find_free_memory(1);
-    if (free_index != -1) {
-        memory[free_index].name = var_name;
-        memory[free_index].value = value;
-        memory[free_index].type = 2; // Mark this memory word as a variable
-    } else {
-        fprintf(stderr, "Error: Not enough memory to store variable '%s'\n", var_name);
+    // 2. If it does not exist, place it in the first empty variable slot
+    for (int i = start + 4; i < start + 7; i++) {
+        if (memory[i].type == 2 && memory[i].name == NULL) { 
+            memory[i].name = strdup(var_name);
+            memory[i].value = strdup(value);
+            return;
+        }
     }
+    
+    fprintf(stderr, "Error: No free variable slots available for process %d\n", current_process_id);
 }
 
 void get_process_bounds(int pid, int *start, int *end) {
@@ -334,7 +336,7 @@ void load_context(int pid, int start) {
             free(memory[start + 2].value); 
         }
         
-        memory[start + 2].value = new_bounds;
+        memory[start + 2].value = strdup(new_bounds);
     }
 
     fclose(file);
@@ -410,46 +412,4 @@ void print_process() {
     }
 
     printf("=============================================\n");
-}
-
-void memory_set_variable(char *var_name, char *value) {
-    int start, end;
-    get_process_bounds(current_process_id, &start, &end);
-
-    if (start == -1 || end == -1) {
-        fprintf(stderr, "Error: Process bounds not found\n");
-        return;
-    }
-
-    for (int i = start + 4; i < start + 7; i++) {
-        if (memory[i].type == 2 && memory[i].name != NULL && strcmp(memory[i].name, var_name) == 0) {
-            memory[i].value = value; // Update the value of the existing variable
-            return;
-        }
-    }
-
-    for (int i = start + 4; i < start + 7; i++) {
-        if (memory[i].type == 0) {
-            memory[i].name = var_name;
-            memory[i].value = value;
-            memory[i].type = 2; // Mark this memory word as a variable
-            return;
-        }
-    }
-}
-
-char *memory_get_variable(char *var_name) {
-    int start, end;
-    get_process_bounds(current_process_id, &start, &end);
-
-    if (start == -1 || end == -1) {
-        return NULL; // Process bounds not found
-    }
-
-    for (int i = start + 4; i < start + 7; i++) {
-        if (memory[i].type == 2 && memory[i].name != NULL && strcmp(memory[i].name, var_name) == 0) {
-            return memory[i].value; // Return the value of the variable
-        }
-    }
-    return NULL; // Variable not found
 }
