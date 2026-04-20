@@ -22,7 +22,15 @@ const char* STATE_TERMINATED = "4";
 void advance_time() {    
     time++;
 
-    // scanf("%*c"); // Wait for user input to advance time (for step-by-step execution)
+    if (TESTING_MODE){
+        printf("\n[Press Enter to continue to Time %d...]", time);
+        fflush(stdout); // Ensure the prompt is printed immediately before waiting
+        
+        int c;
+        // This will wait for the user to press Enter if the buffer is empty, 
+        // OR clear out any leftover garbage from a previous input command.
+        while ((c = getchar()) != '\n' && c != EOF);
+    }
 }
 
 void initialize_scheduler() {
@@ -32,18 +40,18 @@ void initialize_scheduler() {
     file_blocked_queue = create_queue();
 }
 
-void block_process(int pid, char *mutex_name) {
+void block_process(char *mutex_name) {
     if (strcmp(mutex_name, "userInput") == 0) {
-        enqueue(input_blocked_queue, pid);
+        enqueue(input_blocked_queue, current_process_id);
     } else if (strcmp(mutex_name, "userOutput") == 0) {
-        enqueue(output_blocked_queue, pid);
+        enqueue(output_blocked_queue, current_process_id);
     } else if (strcmp(mutex_name, "file") == 0) {
-        enqueue(file_blocked_queue, pid);
+        enqueue(file_blocked_queue, current_process_id);
     }
     
     // Change state in memory to Blocked if it's currently loaded
     int start, end;
-    get_process_bounds(pid, &start, &end);
+    get_process_bounds(current_process_id, &start, &end);
     if (start != -1) {
         if (memory[start + 1].value != NULL) free(memory[start + 1].value);
         memory[start + 1].value = strdup(STATE_BLOCKED);
@@ -51,6 +59,36 @@ void block_process(int pid, char *mutex_name) {
 
     // Force context switch
     current_process_id = -1;
+}
+
+int unblock_process(char *mutex_name) {
+    int process_id = -1;
+    
+    if (strcmp(mutex_name, "userInput") == 0) {
+        if (!is_empty(input_blocked_queue)) {
+            process_id = dequeue(input_blocked_queue); // Remove from blocked queue
+        }
+    } else if (strcmp(mutex_name, "userOutput") == 0) {
+        if (!is_empty(output_blocked_queue)) {
+            process_id = dequeue(output_blocked_queue); // Remove from blocked queue
+        }
+    } else if (strcmp(mutex_name, "file") == 0) {
+        if (!is_empty(file_blocked_queue)) {
+            process_id = dequeue(file_blocked_queue); // Remove from blocked queue
+        }
+    }
+
+    // Change state in memory to Ready if it's currently loaded
+    int start, end;
+    get_process_bounds(process_id, &start, &end);
+    if (start != -1) {
+        if (memory[start + 1].value != NULL) free(memory[start + 1].value);
+        memory[start + 1].value = strdup(STATE_READY);
+    }
+
+    // Enqueue back to ready queue
+    enqueue(ready_queue, process_id);
+    return process_id;
 }
 
 void run_round_robin_scheduler() {
@@ -65,7 +103,7 @@ void run_round_robin_scheduler() {
                 if (TESTING_MODE) printf("[Time %d] Process %d arrived.\n", time, i);
                 
                 // Load into memory (try_looking_for_context = 0 since it's brand new)
-                if (try_load_process_into_memory(i, 0) != -1) {
+                if (try_load_process_into_memory(i, 0)) {
                     change_process_state(i, STATE_READY);
                 } else {
                     if (TESTING_MODE) printf("[Time %d] Failed to load Process %d (Memory Full).\n", time, i);

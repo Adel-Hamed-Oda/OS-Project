@@ -23,6 +23,8 @@ int main(int argc, char *argv[]) {
 }
 
 void initialize() {
+    if (TESTING_MODE) setvbuf(stdout, NULL, _IONBF, 0);
+
     initialize_mutexes();
     initialize_memory();
     initialize_process_controller();

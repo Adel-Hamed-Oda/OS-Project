@@ -51,7 +51,7 @@ void system_writeFile(char *filename, char *content) {
 }
 
 void system_print(char *content) {
-    printf("%s", content);
+    printf("%s\n", content);
 }
 
 void system_printFromTo(int start, int end) {

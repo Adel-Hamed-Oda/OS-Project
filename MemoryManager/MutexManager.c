@@ -37,19 +37,18 @@ int sem_wait_mutex(int pid, char *mutex_name) {
 }
 
 int sem_signal_mutex(int pid, char *mutex_name) {
-    if (mutex_name == NULL) return -1;
+    if (mutex_name == NULL) return 0;
 
     for (int i = 0; i < INITIAL_MUTEXES; i++) {
         if (strcmp(mutexes[i].name, mutex_name) == 0) {
             if (mutexes[i].owner_pid == pid) { // Only the owner can release the mutex
                 if (mutexes[i].owner_pid != -1) {
                     mutexes[i].owner_pid = -1; // Unlock the mutex
+                    return 1;
                 }
-
-                return 1; // process has been unlocked successfully
             }
         }
     }
 
-    return 0; // process has not been unlocked
+    return 0; // Mutex not found or not owned by the process
 }

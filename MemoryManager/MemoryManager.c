@@ -28,7 +28,7 @@ int try_load_process_into_memory(int pid, int try_looking_for_context) {
     int test_start, test_end;
     get_process_bounds(pid, &test_start, &test_end);
     if (test_start != -1) {
-        return -1;
+        return 2;
     }
     
     int required_size = 4 + 3 + instruction_counts[pid]; // 4 for PCB, 3 for variables, rest for instructions
@@ -40,18 +40,20 @@ int try_load_process_into_memory(int pid, int try_looking_for_context) {
         FILE *file = fopen(filename, "r");
         
         if (file != NULL) {
+            fclose(file); // to allow load context to read it
+
             int start = find_free_memory(required_size);
             if (start == -1) {
                 if (try_swapping_out_processes(required_size) == -1) {
                     fclose(file);
-                    return -1;
+                    return 0;
                 }
             }
 
             // Space is guaranteed now, grab the correct index and load
             load_context(pid, find_free_memory(required_size)); 
             fclose(file);
-            return 0; // Fixed double semicolon
+            return 1; // Fixed double semicolon
         }
     }
 
@@ -59,13 +61,13 @@ int try_load_process_into_memory(int pid, int try_looking_for_context) {
     int start = find_free_memory(required_size);
     if (start == -1) {
         if (try_swapping_out_processes(required_size) == -1) {
-            return -1;
+            return 0;
         }
         start = find_free_memory(required_size);
     }
 
     allocate_process(pid, start);
-    return 0;
+    return 1;
 }
 
 int allocate_process(int pid, int start) {
@@ -340,7 +342,6 @@ void load_context(int pid, int start) {
     }
 
     fclose(file);
-    remove(filename); 
     free(filename);
 }
 
@@ -360,6 +361,10 @@ int try_swapping_out_processes(int required_size) {
             if (memory[i].type == 1 && memory[i].name != NULL && strcmp(memory[i].name, "id") == 0) {
                 int pid = atoi((char *)memory[i].value);
                 
+                if (pid == current_process_id) {
+                    continue; // Don't swap out the currently running process
+                }
+
                 int start, end;
                 get_process_bounds(pid, &start, &end);
                 

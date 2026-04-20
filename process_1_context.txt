@@ -1,12 +1,12 @@
 id:1:1
-state:1:1
-bounds:0-13:1
-pc:2:1
+state:3:1
+bounds:14-27:1
+pc:1:1
 (null):(null):2
 (null):(null):2
 (null):(null):2
-(null):semWait:3
-(null):assign:3
+(null):semWait userInput:3
+(null):assign a input:3
 (null):assign b input:3
 (null):semSignal userInput:3
 (null):semWait file:3

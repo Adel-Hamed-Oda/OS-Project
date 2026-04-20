@@ -59,12 +59,17 @@ void semWait(char** args) {
     int success = sem_wait_mutex(current_process_id, args[1]);
 
     if (!success) {
-        block_process(current_process_id, args[1]);
+        block_process(args[1]);
     }
 }
 
 void semSignal(char** args) {
     sem_signal_mutex(current_process_id, args[1]);
+    int unblocked_process_id = unblock_process(args[1]);
+
+    if (unblocked_process_id != -1) {
+        sem_wait_mutex(unblocked_process_id, args[1]);
+    }
 }
 
 // args[1] should always be a variable
