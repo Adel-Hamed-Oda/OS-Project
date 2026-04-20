@@ -19,6 +19,9 @@ int main(int argc, char *argv[]) {
     }
 
     run_round_robin_scheduler();
+
+    clean_up();
+
     return 0;
 }
 
@@ -29,4 +32,8 @@ void initialize() {
     initialize_memory();
     initialize_process_controller();
     initialize_scheduler();
+}
+
+void clean_up() {
+    // will do something here later
 }
