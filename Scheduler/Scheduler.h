@@ -9,6 +9,8 @@ void block_process(char *mutex_name);
 
 int unblock_process(char *mutex_name);
 
-void run_round_robin_scheduler();
+void run_hrrn_scheduler();
+
+void run_rr_scheduler();
 
 #endif

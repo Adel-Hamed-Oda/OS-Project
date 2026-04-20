@@ -11,6 +11,8 @@ int TESTING_MODE = 0;
 
 void initialize();
 
+void clean_up();
+
 int main(int argc, char *argv[]) {
     initialize();
 
@@ -18,7 +20,7 @@ int main(int argc, char *argv[]) {
         TESTING_MODE = atoi(argv[1]);
     }
 
-    run_round_robin_scheduler();
+    run_hrrn_scheduler();
 
     clean_up();
 

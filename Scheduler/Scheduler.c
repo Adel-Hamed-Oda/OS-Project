@@ -91,7 +91,128 @@ int unblock_process(char *mutex_name) {
     return process_id;
 }
 
-void run_round_robin_scheduler() {
+// Returns the index (pid) of the process with the highest response ratio
+// Returns -1 if no eligible process is found
+int get_HRRN(int *remaining_pids, int remaining_count) {
+    int    best_pid            = -1;
+    double best_response_ratio = -1.0;
+
+    for (int i = 0; i < remaining_count; i++) {
+        int pid = remaining_pids[i];
+
+        // Only consider processes that have already arrived
+        if (LOAD_TIMES[pid] <= time) {
+            int waiting_time    = time - LOAD_TIMES[pid];
+            int burst_time      = instruction_counts[pid];
+            double response_ratio = (double)(waiting_time + burst_time) / burst_time;
+
+            if (response_ratio > best_response_ratio) {
+                best_response_ratio = response_ratio;
+                best_pid            = pid;
+            }
+        }
+    }
+
+    return best_pid;
+}
+
+void run_hrrn_scheduler() {
+    int completed_processes = 0;
+
+    // Track which processes are still remaining
+    int remaining_pids[FILE_COUNT];
+    int remaining_count = FILE_COUNT;
+    for (int i = 0; i < FILE_COUNT; i++) remaining_pids[i] = i;
+
+    while (completed_processes < FILE_COUNT) {
+
+        // 1. Load any newly arrived processes into memory
+        for (int i = 0; i < FILE_COUNT; i++) {
+            if (LOAD_TIMES[i] == time) {
+                if (TESTING_MODE) printf("[Time %d] Process %d arrived.\n", time, i);
+
+                if (!try_load_process_into_memory(i, 0)) {
+                    if (TESTING_MODE) printf("[Time %d] Failed to load Process %d (Memory Full).\n", time, i);
+                }
+                change_process_state(i, STATE_READY);
+            }
+        }
+
+        // 2. Pick the highest response ratio process (HRRN is non-preemptive)
+        if (current_process_id == -1) {
+            int best_pid = get_HRRN(remaining_pids, remaining_count);
+
+            if (best_pid != -1) {
+                current_process_id = best_pid;
+
+                // Swap it out of remaining list
+                for (int i = 0; i < remaining_count; i++) {
+                    if (remaining_pids[i] == best_pid) {
+                        remaining_pids[i] = remaining_pids[--remaining_count];
+                        break;
+                    }
+                }
+
+                // Load from disk if swapped out
+                int start, end;
+                get_process_bounds(current_process_id, &start, &end);
+                if (start == -1) try_load_process_into_memory(current_process_id, 1);
+
+                change_process_state(current_process_id, STATE_RUNNING);
+            }
+        }
+
+        // 3. Execute one instruction for the running process
+        if (current_process_id != -1) {
+            int start, end;
+            get_process_bounds(current_process_id, &start, &end);
+
+            if (start != -1) {
+                int pc = atoi((char *)memory[start + 3].value);
+                char *instruction = memory[start + 7 + pc].value;
+
+                printf("[Time %d] Process %d executing [PC: %d]: %s\n", time, current_process_id, pc, instruction);
+                print_process();
+                parse_line(instruction);
+
+                // Update PC
+                pc++;
+                char pc_str[16];
+                snprintf(pc_str, 16, "%d", pc);
+                if (memory[start + 3].value != NULL) memory[start + 3].value = strdup(pc_str);
+
+                // Check if process finished all instructions
+                if (pc >= instruction_counts[current_process_id]) {
+                    if (TESTING_MODE) printf("[Time %d] Process %d Finished Execution.\n", time, current_process_id);
+                    change_process_state(current_process_id, STATE_TERMINATED);
+
+                    for (int i = start; i <= end; i++) {
+                        if (memory[i].name)  free(memory[i].name);
+                        if (memory[i].value) free(memory[i].value);
+                        memory[i].name  = NULL;
+                        memory[i].value = NULL;
+                        memory[i].type  = 0;
+                    }
+                    compact_memory();
+
+                    current_process_id = -1;
+                    completed_processes++;
+                }
+            } else {
+                current_process_id = -1;
+            }
+        } else {
+            if (TESTING_MODE) printf("[Time %d] CPU Idle.\n", time);
+        }
+
+        // 4. Advance time
+        advance_time();
+    }
+
+    if (TESTING_MODE) printf("--- HRRN Scheduling Complete at Time %d ---\n", time);
+}
+
+void run_rr_scheduler() {
     int completed_processes = 0;
     int current_quantum_used = 0;
 
