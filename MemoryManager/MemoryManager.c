@@ -13,7 +13,6 @@ void save_context(int pid);
 void compact_memory();
 void get_process_bounds(int pid, int *start, int *end);
 
-
 void initialize_memory() {
     memory = malloc(sizeof(MemoryWord) * NUMBER_OF_MEMORY_WORDS);
 
@@ -79,7 +78,7 @@ int allocate_process(int pid, int start) {
     snprintf(pid_str, 16, "%d", pid);
     memory[start].name = "id";
     memory[start].value = pid_str; // Assigned formatted string
-    memory[start].type = 1; 
+    memory[start].type = 1;
 
     // 2. Setup PCB (state)
     memory[start + 1].name = "state";

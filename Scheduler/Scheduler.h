@@ -13,4 +13,6 @@ void run_hrrn_scheduler();
 
 void run_rr_scheduler();
 
+void run_mlfq_scheduler();
+
 #endif

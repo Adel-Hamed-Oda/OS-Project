@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
         TESTING_MODE = atoi(argv[1]);
     }
 
-    run_hrrn_scheduler();
+    run_mlfq_scheduler();
 
     clean_up();
 
