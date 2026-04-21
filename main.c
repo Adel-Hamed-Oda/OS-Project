@@ -37,5 +37,22 @@ void initialize() {
 }
 
 void clean_up() {
-    // will do something here later
+    // theoritically this should not be needed since I tell the try_load_context function to not
+    // look for a context file at the start, but just in case something weird happens I will always call
+    // this at the end
+
+    for (int i = 0; i < 100; i++) {
+        char filename[256];
+        snprintf(filename, sizeof(filename), "process_%d_context.txt", i);
+        remove(filename); 
+    }
+
+    char command[512];
+
+    snprintf(command, sizeof(command), "del /Q /F \"%s\\*.*\" 2>nul", USER_FILES_FOLDER_NAME);
+
+    // Execute the terminal command
+    system(command);
+    
+    printf("Cleanup complete!\n");
 }

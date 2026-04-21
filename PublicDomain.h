@@ -4,6 +4,7 @@
 #define MAX_LINE_LENGTH 256
 #define FILE_COUNT 3
 #define NUMBER_OF_MEMORY_WORDS 40
+#define USER_FILES_FOLDER_NAME "UserFiles/"
 
 typedef struct MemoryWord {
     char* name;
